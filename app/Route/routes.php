@@ -4,7 +4,7 @@
 use Minute\Model\Permission;
 use Minute\Routing\Router;
 
-$router->get('/admin/mails', null, 'admin', 'm_mails[5] as mails ORDER BY updated_at DESC', 'm_mail_contents[mails.mail_id][1] as contents')
+$router->get('/admin/mails', null, 'admin', 'm_mails[5] as mails ORDER BY name ASC', 'm_mail_contents[mails.mail_id][1] as contents')
        ->setReadPermission('mails', 'admin')->setDefault('mails', '*')->addConstraint('contents', ['enabled', '=', 'true']);
 $router->post('/admin/mails', null, 'admin', 'm_mails as mails', 'm_mail_contents as contents')
        ->setAllPermissions('mails', 'admin')->setAllPermissions('contents', 'admin')->setDeleteCascade('mails', 'contents');
