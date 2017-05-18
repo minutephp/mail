@@ -4,6 +4,7 @@
  * Date: 7/7/2016
  * Time: 12:26 PM
  */
+
 namespace Minute\EventHandler {
 
     use App\Model\User;
@@ -118,10 +119,15 @@ namespace Minute\EventHandler {
                                     $config     = $this->config->get('private/site/email', []);
                                     $content_id = $content->mail_content_id;
 
-                                    $publicKeys   = $this->config->getPublicVars();
-                                    $userFields   = $user->toArray();
-                                    $userData     = $event->getUserData();
-                                    $defaults     = ['full_name' => trim("$user->first_name $user->last_name"), 'signature' => sprintf("%s support", $publicKeys['site_name'])];
+                                    $publicKeys = $this->config->getPublicVars();
+                                    $userFields = $user->toArray();
+                                    $userData   = $event->getUserData();
+                                    $defaults   = [
+                                        'full_name' => trim("$user->first_name $user->last_name"),
+                                        'signature' => sprintf("%s support", $publicKeys['site_name']),
+                                        'first_name_space' => empty($user->first_name) || preg_match('/^member/i', $user->first_name) ? '' : ucwords(strtolower($user->first_name))
+                                    ];
+
                                     $replacements = array_merge($publicKeys, $userData, $userFields, $defaults);
 
                                     unset($replacements['password']);
@@ -166,8 +172,8 @@ namespace Minute\EventHandler {
                                     if ($content->unsubscribe_link === 'true') {
                                         $unsubscribeText = $this->config->get('private/site/unsubscribe', 'To change subscription settings:');
                                         $unsubscribeLink = '{unsub}/members/subscriptions';
-                                        $textBody .= "\n\n$unsubscribeText\n$unsubscribeLink\n\n";
-                                        $htmlBody .= "\n\n" . sprintf('<p' . '>&nbsp;</p><p><a href="%s">%s</a></p>', $unsubscribeLink, $unsubscribeText);
+                                        $textBody        .= "\n\n$unsubscribeText\n$unsubscribeLink\n\n";
+                                        $htmlBody        .= "\n\n" . sprintf('<p' . '>&nbsp;</p><p><a href="%s">%s</a></p>', $unsubscribeLink, $unsubscribeText);
                                     }
 
                                     $authTags = [
