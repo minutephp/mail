@@ -104,7 +104,7 @@ namespace Minute\EventHandler {
                     if ($mail = is_array($data) ? $this->mailInfo->getMailByWhere($data) : $this->mailInfo->getMailByName($data)) {
                         $email = $user->contact_email ?: $user->email;
 
-                        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        if (filter_var($email, FILTER_VALIDATE_EMAIL) && (strpos($email, 'deleted-') !== 0)) {
                             $content = $this->mailInfo->getMailContent($mail);
 
                             if ($content && $content->subject) {
